@@ -51,15 +51,21 @@ int findMatches(char *regex, char *source, char (*dest)[PHONENUMBER_LENGTH], int
     return ERROR_REGEX;
   }
 
-  // 戻り値は０で一致、それいがいで不一致
-  if(regexec(&preg, source, maxMatches, matchResults, 0) == 0){
-    for(int i = 0; i < maxMatches; i++){
+  // char *searchTarget = source;
+  int searchOffset = 0;
+  for(int i = 0; i < maxMatches; i++){
+    printf("検索範囲: %d\n", searchOffset);
+      // 戻り値は０で一致、それいがいで不一致
+    if(regexec(&preg, source + searchOffset, maxMatches, matchResults, 0) == 0){
       printf("start: %d, end: %d\n", matchResults[i].rm_so, matchResults[i].rm_eo);
       if(matchResults[i].rm_so != -1 && matchResults[i].rm_eo != -1){
+        int matchedPartLength = matchResults[i].rm_eo - matchResults[i].rm_so;
+        strncpy(dest[i], &source[matchResults[i].rm_so], matchedPartLength);
+        searchOffset = matchResults[i].rm_eo + 1;
         matchCount++;
-        int targetLength = matchResults[i].rm_eo - matchResults[i].rm_so;
-        strncpy(dest[i], &source[matchResults[i].rm_so], matchResults[i].rm_eo - matchResults[i].rm_so);
       }
+    }else{
+      break;
     }
   }
   regfree(&preg);
