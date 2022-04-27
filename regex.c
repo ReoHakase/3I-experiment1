@@ -17,8 +17,13 @@ int findMatches(char *regexText, char *source, unsigned int maxMatches, char (*d
   int matchCount = 0;
 
   // printf("maxMatches: %d\n", maxMatches);
-  if (regcomp(&preg, regexText, REG_EXTENDED | REG_NEWLINE) != 0)
+  int status = regcomp(&preg, regexText, REG_EXTENDED | REG_NEWLINE);
+  if (status != 0)
   {
+    // indicateRegexError(status);
+    char errorMessage[STR_LENGTH];
+    regerror(status, &preg, errorMessage, STR_LENGTH);
+    printf("正規表現のコンパイル時エラー: %s\n", errorMessage);
     return ERROR_REGEX;
   }
 

@@ -9,3 +9,4 @@
 
 int readTextFile(char *dest, char *fileName);
 int findMatches(char *regexText, char *source, unsigned int maxMatches, char (*dest)[MAX_GROUPS][MATCHED_TEXT_LENGTH]);
+void listMatches(char *regexText, char *source);
